@@ -50,10 +50,18 @@ def predict():
             end = start + segment_duration
             segment = audio[start:end]
 
+            if len(segment) < 512:
+                continue
+
+         # Converte para float32 normalizado
+            segment = segment.astype(np.float32)
+            segment = segment / np.max(np.abs(segment)) if np.max(np.abs(segment)) != 0 else segment
+
             # Gera espectrograma
             stft = librosa.stft(segment, n_fft=512, hop_length=256)
             spectrogram = np.abs(stft)
             db_spec = librosa.amplitude_to_db(spectrogram, ref=np.max)
+
 
             # Ajusta para 128 frames
             if db_spec.shape[1] < 128:
