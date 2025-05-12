@@ -34,10 +34,13 @@ def predict():
         prob = []            # Zerar lista de probabilidades
 
         audio_buffer = io.BytesIO(file.read())
+        print("Vamos carregar o áudio com librosa")
         audio, sr = librosa.load(audio_buffer, sr=16000)
+        print("Áudio carregado com sucesso")
         segment_duration = sr  # 1 segundo = 16000 amostras
         num_segments = len(audio) // segment_duration
-
+        print(f"Dividindo o áudio em {num_segments} segmentos de {segment_duration} amostras")
+        print("Vamos processar os segmentos")
         for i in range(num_segments):
             start = i * segment_duration
             end = start + segment_duration
