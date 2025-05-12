@@ -8,6 +8,7 @@ from flask_cors import CORS
 import io
 import base64
 import soundfile as sf
+from scipy.io import wavfile
 
 app = Flask(__name__)
 CORS(app)
@@ -32,10 +33,13 @@ def predict():
         ronco_segments = []  # Zerar lista de segmentos
         predictions = []     # Zerar lista de predições
         prob = []            # Zerar lista de probabilidades
-
-        audio_buffer = io.BytesIO(file.read())
+        audio_bytes = file.read()
+        # audio_buffer = io.BytesIO(file.read())
         print("Vamos carregar o áudio com librosa")
-        audio, sr = librosa.load(audio_buffer, sr=16000)
+        
+        sr, audio = wavfile.read(io.BytesIO(audio_bytes))  # sr = sample rate, data = numpy array
+
+        # audio, sr = librosa.load(audio_buffer, sr=16000)
         print("Áudio carregado com sucesso")
         segment_duration = sr  # 1 segundo = 16000 amostras
         num_segments = len(audio) // segment_duration
